@@ -32,7 +32,7 @@ def main():
     table_formatters = tof.get_available_formatters()
     formatters = [k for k, _ in table_formatters.items()]
     parser.add_argument(
-        "-f",
+        "-fo",
         "--formatter",
         default=tof.get_default_formatter(),
         choices=formatters,
@@ -40,7 +40,7 @@ def main():
     )
 
     parser.add_argument(
-        "-n",
+        "-nh",
         "--noheader",
         default=False,
         action="store_true",
@@ -55,7 +55,7 @@ def main():
     )
 
     parser.add_argument(
-        "-r",
+        "-f",
         "--rowfilter",
         default="",
         help="Filter each row by the specified expression",
@@ -68,8 +68,8 @@ def main():
         help="Sort each row by the specified expression",
     )
     parser.add_argument(
-        "-d",
-        "--deletecol",
+        "-r",
+        "--removecol",
         action="append",
         help="Removes the col given by header name. Can be used multiple times.",
     )
@@ -88,7 +88,7 @@ def main():
         options,
         rowfilter_expr=args.rowfilter,
         sort_expr=args.sort,
-        deletecol=args.deletecol,
+        removecollist=args.removecol,
     )
 
     print(out_str)

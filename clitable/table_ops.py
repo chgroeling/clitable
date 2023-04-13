@@ -46,6 +46,7 @@ grammar = r"""
     %ignore WHITESPACE
 """
 
+
 class CompareExpressionTree(Transformer):
     """
     Basic Interperter to parse the grammar from above
@@ -103,18 +104,18 @@ class CompareExpressionTree(Transformer):
     def id(self, items):
         (id_,) = items
         return self.__symbol_table[id_]
-    
+
     def neg_id(self, items):
         (id_,) = items
         return -self.__symbol_table[id_]
-    
+
     def string(self, items):
         (label,) = items
         return str(label.strip("'"))
 
+
 def filter_table_rows(table, rowfilter_expr):
-    """ Filters the table by the given filter expression.
-    """
+    """Filters the table by the given filter expression."""
     compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(rowfilter_expr)
 
@@ -133,8 +134,7 @@ def filter_table_rows(table, rowfilter_expr):
 
 
 def sort_table_rows(table, sort_expression):
-    """ Sorts the table by the given sort expression.
-    """
+    """Sorts the table by the given sort expression."""
     compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(sort_expression)
 
@@ -150,12 +150,12 @@ def sort_table_rows(table, sort_expression):
 
     return clitable.table.Table(headers=header, data=data)
 
-def remove_table_cols(table, remove_list):
-    """ Removes a list of headers from the table
-    """
+
+def remove_table_cols(table, remove_col_list):
+    """Removes a list of headers from the table"""
     header = []
     for pos in table.get_headers():
-        if pos not in remove_list:
+        if pos not in remove_col_list:
             header.append(pos)
 
     data = []
@@ -163,7 +163,8 @@ def remove_table_cols(table, remove_list):
     for i in table:
         row = []
         for head, c in zip(table.get_headers(), i):
-            if head not in remove_list:
+            if head not in remove_col_list:
                 row.append(c)
         data.append(row)
+
     return clitable.table.Table(headers=header, data=data)

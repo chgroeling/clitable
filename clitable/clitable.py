@@ -8,7 +8,7 @@ def clitable(
     output_options,
     rowfilter_expr=None,
     sort_expr=None,
-    deletecol=None,
+    removecollist=None,
 ):
     rowfilter_expr = rowfilter_expr.strip()
     sort_expr = sort_expr.strip()
@@ -23,8 +23,8 @@ def clitable(
     else:
         sorted_table = filtered_table
 
-    if deletecol != None and len(deletecol) > 0:
-        sliced_table = tabfil.remove_table_cols(sorted_table, deletecol)
+    if removecollist != None and len(removecollist) > 0:
+        sliced_table = tabfil.remove_table_cols(sorted_table, removecollist)
     else:
         sliced_table = sorted_table
 
