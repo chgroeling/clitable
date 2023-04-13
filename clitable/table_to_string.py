@@ -16,14 +16,14 @@ def get_max_column_width(table):
 
 def table_to_formatted_string(table, options):
     headers = table.get_headers()
-    noheader = options['noheader']
-    separator = options['separator'] if options['separator'] else "  "
+    noheader = options["noheader"]
+    separator = options["separator"] if options["separator"] else "  "
     data = [i for i in table]
 
     max_col_width = get_max_column_width(table)
 
     format_strs = []
-   
+
     for i in max_col_width:
         format_strs.append("{:<%i}" % i)
 
@@ -55,8 +55,8 @@ def table_to_formatted_string(table, options):
 
 def table_to_plain_string(table, options):
     headers = table.get_headers()
-    noheader = options['noheader']
-    separator = options['separator'] if options['separator'] else " "
+    noheader = options["noheader"]
+    separator = options["separator"] if options["separator"] else " "
     data = [i for i in table]
     lines = []
     no_elements = len(data[0])
@@ -75,7 +75,6 @@ def table_to_plain_string(table, options):
 
         lines.append(str_format.format(*str_put))
     return "\n".join(lines)
-
 
 
 def get_default_formatter():

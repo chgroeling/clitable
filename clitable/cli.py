@@ -1,5 +1,5 @@
 import clitable.table
-import clitable.table_output_formatted as tof
+import clitable.table_to_string as tof
 from argparse import ArgumentParser
 
 
@@ -34,14 +34,14 @@ def main():
         "--noheader",
         default=False,
         action="store_true",
-        help="Table formatter selection.",
+        help="If set, print no header",
     )
 
     parser.add_argument(
         "-s",
         "--separator",
         default=None,
-        help="set separator",
+        help="Set separator",
     )
 
     args = parser.parse_args()
