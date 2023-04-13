@@ -1,5 +1,6 @@
 import clitable.table
 import clitable.table_to_string as tof
+import clitable.table_filter as tabfil
 from argparse import ArgumentParser
 
 
@@ -17,7 +18,7 @@ def setup_sample_table():
 
 
 def cell_formatter(col, row, col_name, inp):
-    """ Example cell formatter"""
+    """Example cell formatter"""
     if col_name == "class":
         return f'"  {inp}  "'
     return inp
@@ -51,6 +52,25 @@ def main():
         help="Set separator",
     )
 
+    parser.add_argument(
+        "-r",
+        "--rowfilter",
+        default="",
+        help="Filter each row by the specified expression",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--tablesort",
+        default="",
+        help="Sort each row by the specified expression",
+    )
+    parser.add_argument(
+        "-d",
+        "--deletecol",
+        action="append",
+        help="Removes the col given by header name. Can be used multiple times.",
+    )
     args = parser.parse_args()
     table = setup_sample_table()
 
@@ -59,7 +79,23 @@ def main():
         "separator": args.separator,
         "cell_formatter": cell_formatter,
     }
-    out_str = table_formatters[args.formatter](table, options)
+
+    if args.rowfilter != None and args.rowfilter != "":
+        filtered_table = tabfil.filter_table_rows(table, args.rowfilter)
+    else:
+        filtered_table = table
+
+    if args.tablesort != None and args.tablesort != "":
+        sorted_table = tabfil.sort_table_rows(filtered_table, args.tablesort)
+    else:
+        sorted_table = filtered_table
+
+    if args.deletecol != None and len(args.deletecol) > 0:
+        spliced_table = tabfil.remove_table_cols(sorted_table, args.deletecol)
+    else:
+        spliced_table = sorted_table
+
+    out_str = table_formatters[args.formatter](spliced_table, options)
 
     print(out_str)
 

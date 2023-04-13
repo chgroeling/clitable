@@ -9,7 +9,7 @@ def get_max_column_width(table, options):
     noheader = options["noheader"]
     data = [i for i in table]
     headers = table.get_headers()
-    no_elements = len(data[0])
+    no_elements = len(headers)
     max_col_width = [0] * no_elements
 
     if not noheader:
@@ -76,7 +76,7 @@ def table_to_plain_string(table, options):
     separator = options["separator"] if options["separator"] else " "
     data = [i for i in table]
     lines = []
-    no_elements = len(data[0])
+    no_elements = len(headers)
     format_strs = ["{}"] * no_elements
     str_format = separator.join(format_strs)
 
