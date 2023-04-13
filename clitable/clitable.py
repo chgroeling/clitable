@@ -4,7 +4,7 @@ import clitable.table_ops as tabfil
 
 
 def clitable(
-    table, formatter, options, rowfilter_expr=None, tablesort_expr=None, deletecol=None
+    table, formatter, options, rowfilter_expr=None, sort_expr=None, deletecol=None
 ):
 
     table_formatters = tof.get_available_formatters()
@@ -13,8 +13,8 @@ def clitable(
     else:
         filtered_table = table
 
-    if tablesort_expr != None and tablesort_expr != "":
-        sorted_table = tabfil.sort_table_rows(filtered_table, tablesort_expr)
+    if sort_expr != None and sort_expr != "":
+        sorted_table = tabfil.sort_table_rows(filtered_table, sort_expr)
     else:
         sorted_table = filtered_table
 

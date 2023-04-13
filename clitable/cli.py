@@ -47,7 +47,7 @@ def main():
     )
 
     parser.add_argument(
-        "-s",
+        "-sep",
         "--separator",
         default=None,
         help="Set separator",
@@ -61,8 +61,8 @@ def main():
     )
 
     parser.add_argument(
-        "-t",
-        "--tablesort",
+        "-s",
+        "--sort",
         default="",
         help="Sort each row by the specified expression",
     )
@@ -86,7 +86,7 @@ def main():
         args.formatter,
         options,
         rowfilter_expr=args.rowfilter,
-        tablesort_expr=args.tablesort,
+        sort_expr=args.sort,
         deletecol=args.deletecol,
     )
 
