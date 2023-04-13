@@ -1,6 +1,7 @@
 import clitable.table
+import clitable.clitable
 import clitable.table_to_string as tof
-import clitable.table_filter as tabfil
+import clitable.table_ops as tabfil
 from argparse import ArgumentParser
 
 
@@ -80,22 +81,14 @@ def main():
         "cell_formatter": cell_formatter,
     }
 
-    if args.rowfilter != None and args.rowfilter != "":
-        filtered_table = tabfil.filter_table_rows(table, args.rowfilter)
-    else:
-        filtered_table = table
-
-    if args.tablesort != None and args.tablesort != "":
-        sorted_table = tabfil.sort_table_rows(filtered_table, args.tablesort)
-    else:
-        sorted_table = filtered_table
-
-    if args.deletecol != None and len(args.deletecol) > 0:
-        spliced_table = tabfil.remove_table_cols(sorted_table, args.deletecol)
-    else:
-        spliced_table = sorted_table
-
-    out_str = table_formatters[args.formatter](spliced_table, options)
+    out_str = clitable.clitable.clitable(
+        table,
+        args.formatter,
+        options,
+        rowfilter_expr=args.rowfilter,
+        tablesort_expr=args.tablesort,
+        deletecol=args.deletecol,
+    )
 
     print(out_str)
 
