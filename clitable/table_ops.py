@@ -1,48 +1,50 @@
 import clitable.table
-from lark import Lark, Transformer, v_args
+from lark import Lark, Transformer
 
-comparison_grammar = r"""
-?expression: comparison
-    | expression AND expression -> and_op
-    | expression OR expression -> or_op
+# Simple grammar to specify sort or filter expressions.
+grammar = r"""
+    ?expression: comparison
+        | expression AND expression -> and_op
+        | expression OR expression -> or_op
 
-?comparison: additive_expression 
-    | additive_expression  "==" comparison -> equal
-    | additive_expression  "!=" comparison -> not_equal
-    | additive_expression  "<" comparison -> less_than
-    | additive_expression  ">" comparison -> more_than
-    | additive_expression  "<=" comparison -> less_or_equal
-    | additive_expression  ">=" comparison -> more_or_equal
+    ?comparison: additive_expression 
+        | additive_expression  "==" comparison -> equal
+        | additive_expression  "!=" comparison -> not_equal
+        | additive_expression  "<" comparison -> less_than
+        | additive_expression  ">" comparison -> more_than
+        | additive_expression  "<=" comparison -> less_or_equal
+        | additive_expression  ">=" comparison -> more_or_equal
 
-?additive_expression: multiplicative_expression
-    | multiplicative_expression  "+"  additive_expression -> add
-    | multiplicative_expression  "-"  additive_expression -> sub
+    ?additive_expression: multiplicative_expression
+        | multiplicative_expression  "+"  additive_expression -> add
+        | multiplicative_expression  "-"  additive_expression -> sub
 
-?multiplicative_expression:  primary_expression 
-    | primary_expression  "*"  multiplicative_expression -> mul
-    | primary_expression  "/"  multiplicative_expression -> div
-                           
-?primary_expression:  "(" expression ")"
-    | SIGNED_FLOAT -> float
-    | SIGNED_INT -> integer
-    | IDENTIFIER -> id
-    | "-" IDENTIFIER -> neg_id
-    | ESCAPED_STRING -> string
+    ?multiplicative_expression:  primary_expression 
+        | primary_expression  "*"  multiplicative_expression -> mul
+        | primary_expression  "/"  multiplicative_expression -> div
+                            
+    ?primary_expression:  "(" expression ")"
+        | SIGNED_FLOAT -> float
+        | SIGNED_INT -> integer
+        | IDENTIFIER -> id
+        | "-" IDENTIFIER -> neg_id
+        | ESCAPED_STRING -> string
 
-AND: "and" | "AND"
-OR: "or" | "OR"
-INTEGER: SIGNED_INT
-IDENTIFIER: ("a" .. "z" | "A" .. "Z")("a" .. "z" | "A" .. "Z" | "0" .."9")*
-WHITESPACE: (" " | "\n" | "\t" | "\r" )+
-%import common.ESCAPED_STRING
-%import common.SIGNED_FLOAT
-%import common.SIGNED_INT
+    AND: "and" | "AND"
+    OR: "or" | "OR"
+    INTEGER: SIGNED_INT
+    IDENTIFIER: ("a" .. "z" | "A" .. "Z")("a" .. "z" | "A" .. "Z" | "0" .."9")*
+    WHITESPACE: (" " | "\n" | "\t" | "\r" )+
 
-%ignore WHITESPACE
+    _STRING_INNER: /.*?/
+    _STRING_ESC_INNER: _STRING_INNER /(?<!\\)(\\\\)*?/
+    ESCAPED_STRING : "'" _STRING_ESC_INNER "'"
+
+    %import common.SIGNED_FLOAT
+    %import common.SIGNED_INT
+
+    %ignore WHITESPACE
 """
-# STRING: " ~[\"]* "
-# IDENTIFIER: ["a"-"z""A"-"Z"_][a-zA-Z0-9_]*
-
 
 class CompareExpressionTree(Transformer):
     """
@@ -105,9 +107,15 @@ class CompareExpressionTree(Transformer):
     def neg_id(self, items):
         (id_,) = items
         return -self.__symbol_table[id_]
+    
+    def string(self, items):
+        (label,) = items
+        return str(label.strip("'"))
 
 def filter_table_rows(table, rowfilter_expr):
-    compare_parser = Lark(comparison_grammar, start="expression")
+    """ Filters the table by the given filter expression.
+    """
+    compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(rowfilter_expr)
 
     header = table.get_headers()
@@ -125,7 +133,9 @@ def filter_table_rows(table, rowfilter_expr):
 
 
 def sort_table_rows(table, sort_expression):
-    compare_parser = Lark(comparison_grammar, start="expression")
+    """ Sorts the table by the given sort expression.
+    """
+    compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(sort_expression)
 
     header = table.get_headers()
@@ -141,8 +151,8 @@ def sort_table_rows(table, sort_expression):
     return clitable.table.Table(headers=header, data=data)
 
 def remove_table_cols(table, remove_list):
-   
-
+    """ Removes a list of headers from the table
+    """
     header = []
     for pos in table.get_headers():
         if pos not in remove_list:
@@ -156,6 +166,4 @@ def remove_table_cols(table, remove_list):
             if head not in remove_list:
                 row.append(c)
         data.append(row)
-
-
     return clitable.table.Table(headers=header, data=data)

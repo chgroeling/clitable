@@ -13,6 +13,7 @@ def setup_sample_table():
         [4, "2_test4-", 2],
         [5, "1_test5", 1],
         [6, "3_test6----", 3],
+        [7, "abc", 3],
     ]
     table = clitable.table.Table(data=data, headers=["id", "name", "class"])
     return table

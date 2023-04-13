@@ -1,4 +1,3 @@
-import clitable.table
 import clitable.table_to_string as tof
 import clitable.table_ops as tabfil
 
@@ -25,10 +24,10 @@ def clitable(
         sorted_table = filtered_table
 
     if deletecol != None and len(deletecol) > 0:
-        spliced_table = tabfil.remove_table_cols(sorted_table, deletecol)
+        sliced_table = tabfil.remove_table_cols(sorted_table, deletecol)
     else:
-        spliced_table = sorted_table
+        sliced_table = sorted_table
 
     table_formatters = tof.get_available_formatters()
-    out_str = table_formatters[formatter](spliced_table, output_options)
+    out_str = table_formatters[formatter](sliced_table, output_options)
     return out_str
