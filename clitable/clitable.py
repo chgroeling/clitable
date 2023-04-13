@@ -4,14 +4,20 @@ import clitable.table_ops as tabfil
 
 
 def clitable(
-    table, formatter, options, rowfilter_expr=None, sort_expr=None, deletecol=None
+    input_table,
+    formatter,
+    output_options,
+    rowfilter_expr=None,
+    sort_expr=None,
+    deletecol=None,
 ):
+    rowfilter_expr = rowfilter_expr.strip()
+    sort_expr = sort_expr.strip()
 
-    table_formatters = tof.get_available_formatters()
     if rowfilter_expr != None and rowfilter_expr != "":
-        filtered_table = tabfil.filter_table_rows(table, rowfilter_expr)
+        filtered_table = tabfil.filter_table_rows(input_table, rowfilter_expr)
     else:
-        filtered_table = table
+        filtered_table = input_table
 
     if sort_expr != None and sort_expr != "":
         sorted_table = tabfil.sort_table_rows(filtered_table, sort_expr)
@@ -23,5 +29,6 @@ def clitable(
     else:
         spliced_table = sorted_table
 
-    out_str = table_formatters[formatter](spliced_table, options)
+    table_formatters = tof.get_available_formatters()
+    out_str = table_formatters[formatter](spliced_table, output_options)
     return out_str

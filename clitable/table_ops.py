@@ -106,9 +106,9 @@ class CompareExpressionTree(Transformer):
         (id_,) = items
         return -self.__symbol_table[id_]
 
-def filter_table_rows(table, string_predicate):
+def filter_table_rows(table, rowfilter_expr):
     compare_parser = Lark(comparison_grammar, start="expression")
-    tree = compare_parser.parse(string_predicate)
+    tree = compare_parser.parse(rowfilter_expr)
 
     header = table.get_headers()
     data = []
@@ -124,9 +124,9 @@ def filter_table_rows(table, string_predicate):
     return clitable.table.Table(headers=header, data=data)
 
 
-def sort_table_rows(table, string_key):
+def sort_table_rows(table, sort_expression):
     compare_parser = Lark(comparison_grammar, start="expression")
-    tree = compare_parser.parse(string_key)
+    tree = compare_parser.parse(sort_expression)
 
     header = table.get_headers()
     data = [row for row in table]
