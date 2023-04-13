@@ -1,15 +1,27 @@
-def get_max_column_width(table):
+def dummy_formatter(col, row, col_name, inp):
+    return inp
+
+
+def get_max_column_width(table, options):
+    formatter = (
+        options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
+    )
+    noheader = options["noheader"]
     data = [i for i in table]
     headers = table.get_headers()
     no_elements = len(data[0])
     max_col_width = [0] * no_elements
 
-    for idx, i in enumerate(headers):
-        max_col_width[idx] = max(max_col_width[idx], len(str(i)))
+    if not noheader:
+        for idx, i in enumerate(headers):
+            max_col_width[idx] = max(max_col_width[idx], len(str(i)))
 
-    for i in data:
-        for idx, v in enumerate(i):
-            max_col_width[idx] = max(max_col_width[idx], len(str(v)))
+    for row, i in enumerate(data):
+        for col, v in enumerate(i):
+            col_name = headers[col]
+            max_col_width[col] = max(
+                max_col_width[col], len(formatter(col, row, col_name, str(v)))
+            )
 
     return max_col_width
 
@@ -18,9 +30,12 @@ def table_to_formatted_string(table, options):
     headers = table.get_headers()
     noheader = options["noheader"]
     separator = options["separator"] if options["separator"] else "  "
+    formatter = (
+        options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
+    )
     data = [i for i in table]
 
-    max_col_width = get_max_column_width(table)
+    max_col_width = get_max_column_width(table, options)
 
     format_strs = []
 
@@ -43,10 +58,12 @@ def table_to_formatted_string(table, options):
         lines.append(str_format.format(*str_put))
 
     # Add data
-    for i in data:
+    for row, i in enumerate(data):
         str_put = []
-        for v in i:
-            str_put.append(str(v))
+
+        for col, v in enumerate(i):
+            col_name = headers[col]
+            str_put.append(formatter(col, row, col_name, str(v)))
 
         lines.append(str_format.format(*str_put))
 

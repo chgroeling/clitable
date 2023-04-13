@@ -16,6 +16,13 @@ def setup_sample_table():
     return table
 
 
+def cell_formatter(col, row, col_name, inp):
+    """ Example cell formatter"""
+    if col_name == "class":
+        return f'"  {inp}  "'
+    return inp
+
+
 def main():
     parser = ArgumentParser(prog="cli")
 
@@ -47,7 +54,11 @@ def main():
     args = parser.parse_args()
     table = setup_sample_table()
 
-    options = {"noheader": args.noheader, "separator": args.separator}
+    options = {
+        "noheader": args.noheader,
+        "separator": args.separator,
+        "cell_formatter": cell_formatter,
+    }
     out_str = table_formatters[args.formatter](table, options)
 
     print(out_str)
