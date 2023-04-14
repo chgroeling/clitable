@@ -1,6 +1,7 @@
 import clitable
 from argparse import ArgumentParser
 
+
 def setup_sample_table():
     data = [
         [1, "1_test1", 1],
@@ -15,9 +16,9 @@ def setup_sample_table():
     return table
 
 
-def cell_formatter(col, row, col_name, inp):
+def cell_formatter(inp, context):
     """Example cell formatter"""
-    if col_name == "class":
+    if context.col_name == "class":
         return f'"  {inp}  "'
     return inp
 
