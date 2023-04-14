@@ -18,7 +18,7 @@ def setup_sample_table():
 
 def cell_formatter(inp, context):
     """Example cell formatter"""
-    if context.col_name == "class":
+    if context.active_col_name == "class":
         return f'"  {inp}  "'
     return inp
 
@@ -79,7 +79,7 @@ def main():
         "cell_formatter": cell_formatter,
     }
 
-    out_str = clitable.clitable(
+    out_str = clitable.table_to_string(
         table,
         args.formatter,
         options,

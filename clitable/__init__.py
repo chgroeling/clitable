@@ -1,5 +1,6 @@
 
-from clitable.clitable import clitable
+from clitable.clitable import table_to_string
+from clitable.clitable import post_process_table
 from clitable.table import Table
 
 # Extract methods to discover available formatters
