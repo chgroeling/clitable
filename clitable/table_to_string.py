@@ -3,9 +3,7 @@ def dummy_formatter(col, row, col_name, inp):
 
 
 def get_max_column_width(table, options):
-    formatter = (
-        options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
-    )
+    formatter = options.get("cell_formatter", dummy_formatter)
     noheader = options.get("noheader", False)
    
     data = [i for i in table]
@@ -29,13 +27,13 @@ def get_max_column_width(table, options):
 
 
 def table_to_formatted_string(table, options):
+    
+    formatter = options.get("cell_formatter", dummy_formatter)
     headers = table.get_headers()
     noheader = options.get("noheader", False)
     separator = options.get("separator", "  ")
 
-    formatter = (
-        options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
-    )
+
     data = [i for i in table]
 
     max_col_width = get_max_column_width(table, options)

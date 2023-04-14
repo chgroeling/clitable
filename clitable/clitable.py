@@ -1,24 +1,23 @@
 import clitable.table_to_string as tof
 import clitable.table_ops as tabfil
+import clitable.table_to_string as tts
 
 
 def clitable(
     input_table,
-    formatter,
-    output_options,
+    formatter=tts.get_default_formatter(),
+    output_options={},
     rowfilter_expr=None,
     sort_expr=None,
     removecollist=None,
 ):
-    rowfilter_expr = rowfilter_expr.strip()
-    sort_expr = sort_expr.strip()
 
-    if rowfilter_expr != None and rowfilter_expr != "":
+    if rowfilter_expr != None and rowfilter_expr.strip() != "":
         filtered_table = tabfil.filter_table_rows(input_table, rowfilter_expr)
     else:
         filtered_table = input_table
 
-    if sort_expr != None and sort_expr != "":
+    if sort_expr != None and sort_expr.strip() != "":
         sorted_table = tabfil.sort_table_rows(filtered_table, sort_expr)
     else:
         sorted_table = filtered_table
