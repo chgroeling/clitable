@@ -7,6 +7,7 @@ def get_max_column_width(table, options):
         options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
     )
     noheader = options.get("noheader", False)
+   
     data = [i for i in table]
     headers = table.get_headers()
     no_elements = len(headers)
@@ -15,6 +16,7 @@ def get_max_column_width(table, options):
     if not noheader:
         for idx, i in enumerate(headers):
             max_col_width[idx] = max(max_col_width[idx], len(str(i)))
+
 
     for row, i in enumerate(data):
         for col, v in enumerate(i):
@@ -30,6 +32,7 @@ def table_to_formatted_string(table, options):
     headers = table.get_headers()
     noheader = options.get("noheader", False)
     separator = options.get("separator", "  ")
+
     formatter = (
         options["cell_formatter"] if options["cell_formatter"] else dummy_formatter
     )

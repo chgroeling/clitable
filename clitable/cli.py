@@ -1,9 +1,5 @@
-import clitable.table
-import clitable.clitable
-import clitable.table_to_string as tof
-import clitable.table_ops as tabfil
+import clitable
 from argparse import ArgumentParser
-
 
 def setup_sample_table():
     data = [
@@ -15,7 +11,7 @@ def setup_sample_table():
         [6, "3_test6----", 3],
         [7, "abc", 3],
     ]
-    table = clitable.table.Table(data=data, headers=["id", "name", "class"])
+    table = clitable.Table(data=data, headers=["id", "name", "class"])
     return table
 
 
@@ -29,12 +25,12 @@ def cell_formatter(col, row, col_name, inp):
 def main():
     parser = ArgumentParser(prog="cli")
 
-    table_formatters = tof.get_available_formatters()
+    table_formatters = clitable.get_available_formatters()
     formatters = [k for k, _ in table_formatters.items()]
     parser.add_argument(
         "-fo",
         "--formatter",
-        default=tof.get_default_formatter(),
+        default=clitable.get_default_formatter(),
         choices=formatters,
         help="Table formatter selection.",
     )
@@ -50,7 +46,7 @@ def main():
     parser.add_argument(
         "-sep",
         "--separator",
-        default=None,
+        default=" ",
         help="Set separator",
     )
 
@@ -82,7 +78,7 @@ def main():
         "cell_formatter": cell_formatter,
     }
 
-    out_str = clitable.clitable.clitable(
+    out_str = clitable.clitable(
         table,
         args.formatter,
         options,

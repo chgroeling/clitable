@@ -23,7 +23,7 @@ LICENSE = "MIT"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    # 'requests', 'maya', 'records',
+    'lark==1.1.5',
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
