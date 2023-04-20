@@ -1,7 +1,6 @@
 import clitable
 from argparse import ArgumentParser
 
-
 def setup_sample_table():
     data = [
         [1, "1_test1", 1],
@@ -79,7 +78,7 @@ def main():
         "cell_formatter": cell_formatter,
     }
 
-    out_str = clitable.table_to_string(
+    out_str = clitable.create_string_from_table(
         table,
         args.formatter,
         options,

@@ -1,6 +1,12 @@
-import clitable.table_to_string as tof
+
 import clitable.table_ops as tabfil
 import clitable.table_to_string as tts
+
+def get_default_formatter():
+    return tts.get_default_formatter()
+
+def get_available_formatters():
+    return tts.get_available_formatters()
 
 
 def post_process_table(
@@ -24,7 +30,7 @@ def post_process_table(
     return sliced_table
 
 
-def table_to_string(
+def create_string_from_table(
     input_table,
     formatter=tts.get_default_formatter(),
     output_options={},
@@ -38,6 +44,6 @@ def table_to_string(
         sort_expr=sort_expr,
         removecollist=removecollist,
     )
-    table_formatters = tof.get_available_formatters()
+    table_formatters = tts.get_available_formatters()
     out_str = table_formatters[formatter](processed_table, output_options)
     return out_str

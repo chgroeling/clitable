@@ -1,22 +1,27 @@
 from collections import namedtuple
- 
-FormatterContext = namedtuple('FormatterContext', ['col_idx', 'row_idx', 'active_col_name', 'row'])
+
+FormatterContext = namedtuple(
+    "FormatterContext", ["col_idx", "row_idx", "active_col_name", "row"]
+)
 
 
 def dummy_formatter(inp, context):
     return inp
 
+
 def create_formatter_context(col_idx, row_idx, active_col_name, headers, row):
     return FormatterContext(
-        col_idx = col_idx,
-        row_idx = row_idx,
-        active_col_name = active_col_name,
-        row = {k:v for k,v in zip(headers,row)}
+        col_idx=col_idx,
+        row_idx=row_idx,
+        active_col_name=active_col_name,
+        row={k: v for k, v in zip(headers, row)},
     )
+
+
 def get_max_column_width(table, options):
     formatter = options.get("cell_formatter", dummy_formatter)
     noheader = options.get("noheader", False)
-   
+
     data = [i for i in table]
     headers = table.get_headers()
     no_elements = len(headers)
@@ -26,11 +31,12 @@ def get_max_column_width(table, options):
         for idx, i in enumerate(headers):
             max_col_width[idx] = max(max_col_width[idx], len(str(i)))
 
-
     for row, i in enumerate(data):
         for col, v in enumerate(i):
             active_col_name = headers[col]
-            fmt_context = create_formatter_context(col, row, active_col_name, headers, i)
+            fmt_context = create_formatter_context(
+                col, row, active_col_name, headers, i
+            )
             max_col_width[col] = max(
                 max_col_width[col], len(formatter(str(v), fmt_context))
             )
@@ -43,7 +49,6 @@ def table_to_formatted_string(table, options):
     headers = table.get_headers()
     noheader = options.get("noheader", False)
     separator = options.get("separator", "  ")
-
 
     data = [i for i in table]
 
@@ -75,7 +80,9 @@ def table_to_formatted_string(table, options):
 
         for col, v in enumerate(i):
             active_col_name = headers[col]
-            fmt_context = create_formatter_context(col, row, active_col_name,headers, i)
+            fmt_context = create_formatter_context(
+                col, row, active_col_name, headers, i
+            )
             str_put.append(formatter(str(v), fmt_context))
 
         lines.append(str_format.format(*str_put))

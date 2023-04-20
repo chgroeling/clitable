@@ -6,6 +6,7 @@ grammar = r"""
     ?expression: comparison
         | expression AND expression -> and_op
         | expression OR expression -> or_op
+        | IDENTIFIER DOT_OPERATOR "endswith" "(" ESCAPED_STRING ")" -> id_endswith
 
     ?comparison: additive_expression 
         | additive_expression  "==" comparison -> equal
@@ -22,7 +23,8 @@ grammar = r"""
     ?multiplicative_expression:  primary_expression 
         | primary_expression  "*"  multiplicative_expression -> mul
         | primary_expression  "/"  multiplicative_expression -> div
-                            
+
+
     ?primary_expression:  "(" expression ")"
         | SIGNED_FLOAT -> float
         | SIGNED_INT -> integer
@@ -33,6 +35,7 @@ grammar = r"""
     AND: "and" | "AND"
     OR: "or" | "OR"
     INTEGER: SIGNED_INT
+    DOT_OPERATOR : "."
     IDENTIFIER: ("a" .. "z" | "A" .. "Z")("a" .. "z" | "A" .. "Z" | "0" .."9")*
     WHITESPACE: (" " | "\n" | "\t" | "\r" )+
 
@@ -46,10 +49,8 @@ grammar = r"""
     %ignore WHITESPACE
 """
 
-
 class CompareExpressionTree(Transformer):
-    """
-    Basic Interperter to parse the grammar from above
+    """ Basic Interperter to parse the grammar from above
     """
 
     def __init__(self, symbol_table):
@@ -112,6 +113,11 @@ class CompareExpressionTree(Transformer):
     def string(self, items):
         (label,) = items
         return str(label.strip("'"))
+    
+    def id_endswith(self, items):
+        (id_, _, expression ) = items
+        identifier = self.__symbol_table[id_]
+        return identifier.endswith(expression.strip("'"))
 
 
 def filter_table_rows(table, rowfilter_expr):
@@ -119,6 +125,7 @@ def filter_table_rows(table, rowfilter_expr):
     compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(rowfilter_expr)
 
+    print(tree.pretty())
     header = table.get_headers()
     data = []
 
@@ -129,7 +136,7 @@ def filter_table_rows(table, rowfilter_expr):
             raise Exception("String predicate doesn't evaluate to bool")
         if out:
             data.append(row)
-
+ 
     return clitable.table.Table(headers=header, data=data)
 
 
@@ -152,7 +159,7 @@ def sort_table_rows(table, sort_expression):
 
 
 def remove_table_cols(table, remove_col_list):
-    """Removes a list of headers from the table"""
+    """Remove columns whose header name appears in the 'remove_col_list' list """
     header = []
     for pos in table.get_headers():
         if pos not in remove_col_list:
