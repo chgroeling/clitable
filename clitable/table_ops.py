@@ -1,4 +1,5 @@
 import clitable.table
+import re
 from lark import Lark, Transformer
 
 # Simple grammar to specify sort or filter expressions.
@@ -7,6 +8,7 @@ grammar = r"""
         | expression AND expression -> and_op
         | expression OR expression -> or_op
         | IDENTIFIER DOT_OPERATOR "endswith" "(" ESCAPED_STRING ")" -> id_endswith
+        | IDENTIFIER DOT_OPERATOR "match" "(" ESCAPED_STRING ")" -> id_match
 
     ?comparison: additive_expression 
         | additive_expression  "==" comparison -> equal
@@ -114,7 +116,15 @@ class CompareExpressionTree(Transformer):
         (label,) = items
         return str(label.strip("'"))
     
-    def id_endswith(self, items):
+    def id_match(self, items): # Match regular expression
+        (id_, _, pattern ) = items
+        identifier = self.__symbol_table[id_]
+        pattern = pattern.strip("'")
+        pattern = re.compile(pattern)
+
+        return pattern.match(identifier) != None
+
+    def id_endswith(self, items): # String ends with string
         (id_, _, expression ) = items
         identifier = self.__symbol_table[id_]
         return identifier.endswith(expression.strip("'"))
