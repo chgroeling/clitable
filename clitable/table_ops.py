@@ -125,7 +125,8 @@ def filter_table_rows(table, rowfilter_expr):
     compare_parser = Lark(grammar, start="expression")
     tree = compare_parser.parse(rowfilter_expr)
 
-    print(tree.pretty())
+    #print(tree.pretty())
+    
     header = table.get_headers()
     data = []
 
